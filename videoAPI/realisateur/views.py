@@ -49,3 +49,7 @@ def realisateur_detail(request, pk):
     elif request.method == 'DELETE':
         realisateur.delete()
         return JsonResponse({'message': 'Le réalisateur a été supprimé'}, status=204)
+
+
+
+
