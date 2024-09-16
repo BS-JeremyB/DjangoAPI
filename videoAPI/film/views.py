@@ -1,19 +1,19 @@
-from django.views.decorators.csrf import csrf_exempt
 from .models import Film
 from .serializers import FilmSerializer
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.exceptions import NotFound
 
-# Create your views here.
-@api_view(['GET', 'POST'])
-def film_list(request): 
-    if request.method == 'GET':
+
+
+class FilmList(APIView):
+    def get(self, request, format=None):
         films = Film.objects.all()
         serializer = FilmSerializer(films, many=True)
         return Response(serializer.data)
     
-    elif request.method == 'POST':
+    def post(self, request, format=None):
         serializer = FilmSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -22,27 +22,33 @@ def film_list(request):
 
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-# PUT > mise à jour - DELETE > Supprimer - GET > le detail
-def film_detail(request, pk):
+class FilmDetail(APIView):
 
-    try:
-        film = Film.objects.get(pk=pk)
-    except:
-        return Response({'error': 'Le réalisateur n\'existe pas'}, status=status.HTTP_404_NOT_FOUND)
-    
-    if request.method == 'GET':
+    def get_object(self, pk):
+        try:
+           return Film.objects.get(pk=pk)
+        except:
+            raise NotFound(detail="Le film n'existe pas !")
+        
+    def get(self, request, pk):
+        film = self.get_object(pk)
         serializer = FilmSerializer(film)
         return Response(serializer.data)
     
 
-    elif request.method == 'PUT':
+    def put(self, request, pk):
+        film = self.get_object(pk)
         serializer = FilmSerializer(film, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    elif request.method == 'DELETE':
+    def delete(self, request, pk):
+        film = self.get_object(pk)
         film.delete()
-        return Response({'message': 'Le réalisateur a été supprimé'}, status=status.HTTP_204_NO_CONTENT)
+        return Response({'message': 'Le film a été supprimé'}, status=status.HTTP_204_NO_CONTENT)
+
+
+
+
