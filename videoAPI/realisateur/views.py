@@ -30,7 +30,7 @@ class RealisateurDetail(APIView):
         except:
             raise NotFound(detail="Le réalisateur n'existe pas !")
         
-    def get(self, request, pk):
+    def get(self, request,  pk, format=None,):
         realisateur = self.get_object(pk)
         serializer = RealisateurSerializer(realisateur)
         return Response(serializer.data)
