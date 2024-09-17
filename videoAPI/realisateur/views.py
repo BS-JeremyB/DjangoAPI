@@ -19,7 +19,7 @@ class RealisateurList(APIView):
 
     def get(self, request, format=None):
         realisateurs = Realisateur.objects.all()
-        serializer = RealisateurSerializer(realisateurs, many=True, context={'request': request})
+        serializer = RealisateurListSerializer(realisateurs, many=True, context={'request': request})
         return Response(serializer.data)
     
     def post(self, request, format=None):

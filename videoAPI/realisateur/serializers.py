@@ -2,7 +2,17 @@ from rest_framework import serializers
 from .models import Realisateur
 
 
-class RealisateurSerializer(serializers.ModelSerializer):
+class RealisateurListSerializer(serializers.HyperlinkedModelSerializer):
+    nom_complet = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Realisateur
+        fields = ['url', 'nom_complet']
+
+    def get_nom_complet(self, obj):
+        return f"{obj.prenom} {obj.nom}"
+
+class RealisateurSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Realisateur
         fields = '__all__'
