@@ -4,17 +4,25 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.exceptions import NotFound
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 
 
 
 class FilmList(APIView):
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return  [AllowAny()]
+        else:
+            return  [IsAuthenticated()]
+
     def get(self, request, format=None):
         films = Film.objects.all()
-        serializer = FilmSerializer(films, many=True)
+        serializer = FilmSerializer(films, many=True, context={'request': request})
         return Response(serializer.data)
     
     def post(self, request, format=None):
-        serializer = FilmSerializer(data=request.data)
+        serializer = FilmSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -32,13 +40,13 @@ class FilmDetail(APIView):
         
     def get(self, request, pk):
         film = self.get_object(pk)
-        serializer = FilmSerializer(film)
+        serializer = FilmSerializer(film, context={'request': request})
         return Response(serializer.data)
     
 
     def put(self, request, pk):
         film = self.get_object(pk)
-        serializer = FilmSerializer(film, data=request.data)
+        serializer = FilmSerializer(film, data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
