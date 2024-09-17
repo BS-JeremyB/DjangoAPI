@@ -3,12 +3,12 @@ from .models import Film
 from realisateur.models import Realisateur
 from realisateur.serializers import RealisateurSerializer
 
-class FilmSerializer(serializers.ModelSerializer):
-    realisateur = RealisateurSerializer(read_only=True)
+class FilmSerializer(serializers.HyperlinkedModelSerializer):
+    realisateur = serializers.HyperlinkedRelatedField(read_only=True, view_name='realisateur-detail')
     realisateur_id = serializers.PrimaryKeyRelatedField(queryset=Realisateur.objects.all(), source='realisateur')
     class Meta:
         model = Film
-        fields = ['id', 'titre', 'description', 'date_sortie', 'realisateur', 'realisateur_id']
+        fields = ['url','id', 'titre', 'description', 'date_sortie', 'realisateur', 'realisateur_id']
 
 # class FilmSerializer(serializers.Serializer):
 #     id = serializers.IntegerField(read_only=True)
