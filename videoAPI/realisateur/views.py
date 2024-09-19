@@ -2,10 +2,16 @@ from .models import Realisateur
 from .serializers import *
 from videoAPI.permissions import IsAdminUser, IsAuthenticatedNoDelete, IsReadOnly
 from rest_framework import viewsets
-
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter
 class RealisateurViewSet(viewsets.ModelViewSet):
     queryset = Realisateur.objects.all()
-    permission_classes = [IsAdminUser | IsAuthenticatedNoDelete | IsReadOnly]
+    #permission_classes = [IsAdminUser | IsAuthenticatedNoDelete | IsReadOnly]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ['nom', 'date_naissance']
+    ordering_fields = ['nom', 'date_naissance']
+    #ordering = ['-nom']
+    
 
     def get_serializer_class(self):
         if self.action == 'list':
