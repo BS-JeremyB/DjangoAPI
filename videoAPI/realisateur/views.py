@@ -10,7 +10,13 @@ from rest_framework.generics import ListCreateAPIView, ListAPIView, CreateAPIVie
 
 class RealisateurList(ListCreateAPIView):
     queryset = Realisateur.objects.all()
-    serializer_class = RealisateurSerializer
+    #serializer_class = RealisateurSerializer
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return RealisateurListSerializer
+        
+        return RealisateurSerializer
 
 class RealisateurDetail(RetrieveUpdateDestroyAPIView):
     queryset = Realisateur.objects.all()
