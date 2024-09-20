@@ -1,39 +1,21 @@
 from rest_framework import serializers
 from .models import Realisateur
 
-
 class RealisateurListSerializer(serializers.HyperlinkedModelSerializer):
+    # Champ personnalisé pour afficher le nom complet
     nom_complet = serializers.SerializerMethodField()
 
     class Meta:
         model = Realisateur
+        # Champs à inclure dans la sérialisation
         fields = ['url', 'nom_complet']
 
     def get_nom_complet(self, obj):
+        # Méthode pour obtenir le nom complet du réalisateur
         return f"{obj.prenom} {obj.nom}"
 
 class RealisateurSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Realisateur
+        # Inclure tous les champs du modèle
         fields = '__all__'
-
-
-# class RealisateurSerializer(serializers.Serializer):
-#     id = serializers.IntegerField(read_only=True)
-#     nom = serializers.CharField(max_length=100)
-#     prenom = serializers.CharField(max_length=100)
-#     date_naissance = serializers.DateField(required=False, allow_null=True)
-
-
-#     def create(self, validated_data):
-#         return Realisateur.objects.create(**validated_data)
-    
-
-#     def update(self, instance, validated_data):
-#         instance.nom = validated_data.get('nom', instance.nom)
-#         instance.prenom = validated_data.get('prenom', instance.prenom)
-#         instance.date_naissance = validated_data.get('date_naissance', instance.date_naissance)
-
-#         instance.save()
-#         return instance
-    
